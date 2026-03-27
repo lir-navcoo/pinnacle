@@ -24,10 +24,9 @@
 - 数据统计模块（调用量、成功率）
 
 ## 代码仓库
-- 远程地址：https://gitee.com/li78080114/pinnacle.git
+- GitHub 仓库：git@github.com:li78080114/pinnacle.git（用户 GitHub 用户名：li78080114）
 
 ## 当前进度
 - ✅ 已完成项目初始化（前后端基础框架）
-- ✅ 已完成本地 Git 提交并推送到 Gitee（64 个文件，14983 行代码）
-- ✅ 已完成基础设施配置切换：PostgreSQL→MySQL，OSS→本地文件存储
-- ✅ 已创建本地存储服务 storage_service.py，统一存储接口
+- ✅ 已推送代码到 Gitee（25个文件，14983 行代码）
+- 🔄 当前任务：在 GitHub 创建新仓库并推送代码
