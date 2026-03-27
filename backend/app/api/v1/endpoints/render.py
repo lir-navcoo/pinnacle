@@ -14,7 +14,7 @@ import hashlib
 from app.core.database import get_db
 from app.models import Template, RenderJob, APIKey
 from app.schemas import RenderRequest, RenderResponse, RenderJobResponse
-from app.services import renderer_service, oss_service, dingtalk_service
+from app.services import renderer_service, storage_service, dingtalk_service
 
 router = APIRouter(prefix="/render", tags=["渲染接口"])
 
@@ -160,8 +160,8 @@ async def process_render_job(
             quality=request.quality
         )
         
-        # 上传到 OSS
-        image_url = await oss_service.upload_bytes(
+        # 上传到存储
+        image_url = await storage_service.upload_bytes(
             data=image_bytes,
             content_type=f"image/{request.format}",
             extension=request.format
@@ -234,7 +234,7 @@ async def get_render_job(
 @router.post("/preview", response_model=RenderResponse)
 async def preview_render(
     template_id: str,
-    params: dict = Query(default_factory=dict),
+    params: Optional[str] = Query(None, description="JSON 格式的参数"),
     format: str = Query("png"),
     quality: int = Query(95),
     db: AsyncSession = Depends(get_db),
@@ -244,6 +244,11 @@ async def preview_render(
     预览渲染（不保存任务记录）
     直接返回图片数据，用于编辑器预览
     """
+    import json
+    
+    # 解析参数
+    params_dict = json.loads(params) if params else {}
+    
     # 获取模板
     result = await db.execute(
         select(Template).where(Template.id == template_id)
@@ -265,7 +270,7 @@ async def preview_render(
     # 渲染图片
     image_bytes = await renderer_service.render(
         template=template_data,
-        params=params,
+        params=params_dict,
         format=format,
         quality=quality
     )

@@ -245,8 +245,8 @@ async def generate_thumbnail(
     thumbnail_data = renderer_service.generate_thumbnail(template_dict)
     
     # 保存缩略图
-    from app.services import oss_service
-    thumbnail_url = await oss_service.upload_bytes(
+    from app.services import storage_service
+    thumbnail_url = await storage_service.upload_bytes(
         thumbnail_data,
         content_type="image/png",
         extension="png"

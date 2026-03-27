@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     
-    # 数据库
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/pinnacle"
+    # 数据库（MySQL）
+    DATABASE_URL: str = "mysql+aiomysql://root:root@localhost:3306/pinnacle"
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -33,7 +33,12 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
-    # 阿里云 OSS
+    # 本地文件存储配置
+    STORAGE_TYPE: str = "local"  # local | oss
+    LOCAL_STORAGE_PATH: str = "/Users/lirui/Documents/pinnacle/backend/uploads"
+    LOCAL_STORAGE_URL_PREFIX: str = "/uploads"
+    
+    # 阿里云 OSS（保留，可选切换）
     OSS_ENDPOINT: str = "https://oss-cn-hangzhou.aliyuncs.com"
     OSS_ACCESS_KEY_ID: str = ""
     OSS_ACCESS_KEY_SECRET: str = ""

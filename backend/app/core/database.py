@@ -4,17 +4,20 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
+import asyncio
 
 from app.core.config import settings
 
 
 # 创建异步引擎
+# MySQL 需要设置 pool_recycle 避免连接超时断开
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,
     pool_pre_ping=True,
     pool_size=10,
     max_overflow=20,
+    pool_recycle=3600,  # 1 小时后回收连接
 )
 
 # 创建会话工厂
@@ -45,5 +48,10 @@ async def get_db() -> AsyncSession:
 
 async def init_db():
     """初始化数据库"""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        print("✅ Database tables created successfully")
+    except Exception as e:
+        print(f"⚠️  Database initialization warning: {e}")
+        print("   Please ensure MySQL is running and database 'pinnacle' exists")
