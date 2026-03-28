@@ -18,7 +18,7 @@ export default function NewTemplatePage() {
           width: 750,
           height: 1334,
           elements: [],
-          is_published: false,
+          is_public: false,
         });
         // 跳转到编辑页面
         router.replace(`/templates/${template.id}/edit`);
