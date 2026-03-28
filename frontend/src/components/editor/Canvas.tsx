@@ -188,6 +188,101 @@ export const CanvasEditor = forwardRef<CanvasEditorHandle, CanvasEditorProps>(
 
     fabricRef.current = canvas;
 
+    // 初始化完成后立即同步 elements（解决初始渲染时序问题）
+    // 延迟 0ms 确保 canvas 完全准备好
+    setTimeout(() => {
+      const currentElements = elementsRef.current;
+      if (currentElements.length > 0) {
+        // 遍历并创建所有元素
+        currentElements.forEach((element) => {
+          if (!element.id) return;
+          if (elementsMapRef.current.has(element.id)) return;
+          
+          let obj: fabric.Object | null = null;
+          if (element.type === "text") {
+            obj = new fabric.IText(element.content || "双击编辑", {
+              left: element.x,
+              top: element.y,
+              fontSize: element.font_size || 24,
+              fontFamily: element.font_family || "sans-serif",
+              fill: element.font_color || "#000000",
+              textAlign: element.text_align || "left",
+              angle: element.rotation || 0,
+              opacity: element.opacity || 1,
+            });
+          } else if (element.type === "image" && element.src?.startsWith("data:")) {
+            // 异步创建图片
+            fabric.FabricImage.fromURL(element.src, { crossOrigin: "anonymous" }).then((img) => {
+              if (!fabricRef.current) return;
+              const targetWidth = element.width || 100;
+              const targetHeight = element.height || 100;
+              const borderRadius = element.border_radius || 0;
+              
+              img.set({
+                left: element.x,
+                top: element.y,
+                scaleX: targetWidth / (img.width || 100),
+                scaleY: targetHeight / (img.height || 100),
+                angle: element.rotation || 0,
+                opacity: element.opacity || 1,
+                selectable: !element.lock,
+                evented: !element.lock,
+              });
+              
+              if (borderRadius > 0) {
+                const clipRect = new fabric.Rect({
+                  left: targetWidth / 2,
+                  top: targetHeight / 2,
+                  width: targetWidth,
+                  height: targetHeight,
+                  rx: borderRadius,
+                  ry: borderRadius,
+                  originX: "center",
+                  originY: "center",
+                });
+                img.set("clipPath", clipRect);
+              }
+              
+              img.set("elementId", element.id);
+              img.set("name", element.name);
+              img.set("visible", element.visible !== false);
+              fabricRef.current.add(img);
+              if (element.id) {
+                elementsMapRef.current.set(element.id, img);
+              }
+              fabricRef.current.renderAll();
+            }).catch(console.error);
+            return;
+          } else if (element.type === "image") {
+            // 占位符矩形
+            obj = new fabric.Rect({
+              left: element.x,
+              top: element.y,
+              width: element.width || 100,
+              height: element.height || 100,
+              fill: "#f3f4f6",
+              stroke: "#d1d5db",
+              strokeWidth: 1,
+              strokeDashArray: [5, 5],
+            });
+          }
+          
+          if (obj) {
+            obj.set("elementId", element.id);
+            obj.set("name", element.name || "元素");
+            obj.set({
+              selectable: !element.lock,
+              evented: !element.lock,
+              visible: element.visible !== false,
+            });
+            canvas.add(obj);
+            elementsMapRef.current.set(element.id, obj);
+          }
+        });
+        canvas.renderAll();
+      }
+    }, 0);
+
     // 全局设置控制点默认样式（Fabric.js 6.x）
     fabric.Object.prototype.set({
       cornerColor: "#ffffff",
