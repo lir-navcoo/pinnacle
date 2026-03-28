@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { CanvasEditor, createElement } from "@/components/editor/Canvas";
 import type { CanvasEditorHandle } from "@/components/editor/Canvas";
