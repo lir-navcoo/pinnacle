@@ -223,15 +223,58 @@ export function PropertyPanel({ element, onChange }: PropertyPanelProps) {
             <hr className="my-4" />
             <h4 className="text-xs font-semibold text-gray-500">图片属性</h4>
 
-            <div>
-              <Label className="text-xs">图片地址</Label>
-              <Input
-                value={element.src || ""}
-                onChange={(e) => updateField("src", e.target.value)}
-                className="h-8"
-                placeholder="输入图片 URL"
+            {/* 图片预览 */}
+            {element.src && (
+              <div className="mb-3">
+                <div className="relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden border">
+                  <img
+                    src={element.src}
+                    alt="预览"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 上传按钮 */}
+            <div className="mb-3">
+              <input
+                type="file"
+                accept="image/*"
+                id="image-upload"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      updateField("src", event.target?.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                  e.target.value = "";
+                }}
               />
+              <label
+                htmlFor="image-upload"
+                className="flex items-center justify-center gap-2 w-full h-10 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-lg cursor-pointer transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {element.src ? "更换图片" : "上传图片"}
+              </label>
             </div>
+
+            {/* 清除图片 */}
+            {element.src && (
+              <button
+                onClick={() => updateField("src", "")}
+                className="w-full h-8 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                清除图片
+              </button>
+            )}
 
             <div>
               <Label className="text-xs">圆角</Label>
@@ -244,64 +287,6 @@ export function PropertyPanel({ element, onChange }: PropertyPanelProps) {
                 className="mt-2"
               />
               <span className="text-xs text-gray-500">{element.border_radius}px</span>
-            </div>
-          </>
-        )}
-
-        {/* 形状属性 */}
-        {element.type === "shape" && (
-          <>
-            <hr className="my-4" />
-            <h4 className="text-xs font-semibold text-gray-500">形状属性</h4>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs">填充颜色</Label>
-                <div className="flex gap-2">
-                  <input
-                    type="color"
-                    value={element.fill_color || "#ffffff"}
-                    onChange={(e) => updateField("fill_color", e.target.value)}
-                    className="h-8 w-12"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label className="text-xs">边框颜色</Label>
-                <div className="flex gap-2">
-                  <input
-                    type="color"
-                    value={element.stroke_color || "#000000"}
-                    onChange={(e) => updateField("stroke_color", e.target.value)}
-                    className="h-8 w-12"
-                  />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* 图表属性 */}
-        {element.type === "chart" && (
-          <>
-            <hr className="my-4" />
-            <h4 className="text-xs font-semibold text-gray-500">图表属性</h4>
-
-            <div>
-              <Label className="text-xs">图表类型</Label>
-              <Select
-                value={element.chart_type || "bar"}
-                onValueChange={(v) => updateField("chart_type", v)}
-              >
-                <SelectTrigger className="h-8">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bar">柱状图</SelectItem>
-                  <SelectItem value="progress">进度条</SelectItem>
-                  <SelectItem value="pie">饼图</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </>
         )}

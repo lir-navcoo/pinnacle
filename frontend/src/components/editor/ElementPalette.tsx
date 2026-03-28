@@ -1,6 +1,6 @@
 "use client";
 
-import { Type, Image, Square, BarChart3 } from "lucide-react";
+import { Type, Image } from "lucide-react";
 import type { TemplateElement } from "@/lib/api";
 
 interface ElementPaletteProps {
@@ -10,8 +10,6 @@ interface ElementPaletteProps {
 const elements = [
   { type: "text" as const, label: "文本", icon: Type, color: "bg-blue-500" },
   { type: "image" as const, label: "图片", icon: Image, color: "bg-green-500" },
-  { type: "shape" as const, label: "形状", icon: Square, color: "bg-orange-500" },
-  { type: "chart" as const, label: "图表", icon: BarChart3, color: "bg-purple-500" },
 ];
 
 export function ElementPalette({ onAddElement }: ElementPaletteProps) {

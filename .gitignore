@@ -57,3 +57,13 @@ target/
 
 # Go
 vendor/
+
+# 数据库
+*.db
+*.sqlite
+
+# TypeScript
+*.tsbuildinfo
+
+# uv
+.venv/

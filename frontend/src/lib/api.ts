@@ -63,6 +63,49 @@ async function request<T>(
   }
 }
 
+// Blob 请求（用于预览等返回二进制数据的场景）
+async function requestBlob(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<Blob> {
+  const url = `${API_BASE}${endpoint}`;
+  
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  const token = typeof window !== "undefined" 
+    ? localStorage.getItem("token")
+    : null;
+  if (token) {
+    (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+  }
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new APIError(
+        error.detail || error.message || "请求失败",
+        response.status,
+        error.code
+      );
+    }
+
+    return response.blob();
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw error;
+    }
+    throw new APIError("网络错误，请检查连接", 0);
+  }
+}
+
 // API 客户端
 export const api = {
   // 模板管理
@@ -116,10 +159,9 @@ export const api = {
       params: Record<string, unknown>,
       format = "png"
     ) =>
-      request<Blob>(`/render/preview?template_id=${templateId}&format=${format}`, {
+      requestBlob(`/render/preview?template_id=${templateId}&format=${format}`, {
         method: "POST",
         body: JSON.stringify(params),
-        headers: { "Content-Type": "application/json" },
       }),
   },
 
@@ -202,6 +244,11 @@ export interface TemplateElement {
   // 图片属性
   src?: string;
   border_radius?: number;
+  // 形状属性
+  shape_type?: "rect" | "circle" | "line" | "triangle";
+  fill_color?: string;
+  stroke_color?: string;
+  stroke_width?: number;
   // 图表属性
   chart_type?: "bar" | "pie" | "progress";
   data?: unknown[];

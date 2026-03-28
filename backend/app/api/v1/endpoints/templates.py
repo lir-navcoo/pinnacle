@@ -51,7 +51,8 @@ async def list_templates(
         query = query.where(Template.status == status)
     
     if search:
-        query = query.where(Template.name.ilike(f"%{search}%"))
+        # SQLite 使用 like (不区分大小写)
+        query = query.where(Template.name.like(f"%{search}%"))
     
     # 统计总数
     count_query = select(func.count()).select_from(query.subquery())

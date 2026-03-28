@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import { Plus, TestTube, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export default function DingTalkPage() {
 
   const testBot = async (botId: string) => {
     // 模拟测试
-    alert("测试消息已发送，请检查钉钉群");
+    toast.success("测试消息已发送，请检查钉钉群");
   };
 
   return (

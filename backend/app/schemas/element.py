@@ -95,9 +95,32 @@ class ElementUpdate(BaseModel):
     data: Optional[list] = None
 
 
-class ElementResponse(TextElement):
-    """元素响应"""
+class ElementResponse(BaseModel):
+    """元素响应 - 支持多种元素类型"""
     id: str
+    type: Literal["text", "image"] = Field(..., description="元素类型")
+    name: str = Field(..., description="元素名称")
+    x: float = Field(0, description="X坐标")
+    y: float = Field(0, description="Y坐标")
+    width: float = Field(100, description="宽度")
+    height: float = Field(50, description="高度")
+    rotation: float = Field(0, description="旋转角度")
+    z_index: int = Field(0, description="图层顺序")
+    opacity: float = Field(1.0, ge=0, le=1, description="透明度")
+    lock: bool = Field(False, description="是否锁定")
+    visible: bool = Field(True, description="是否可见")
+    # 文本属性
+    content: Optional[str] = Field("", description="文本内容")
+    font_family: Optional[str] = Field("sans-serif", description="字体")
+    font_size: Optional[float] = Field(24, description="字号")
+    font_weight: Optional[str] = Field("normal", description="字重")
+    font_color: Optional[str] = Field("#000000", description="字体颜色")
+    text_align: Optional[Literal["left", "center", "right"]] = Field("left", description="文本对齐")
+    line_height: Optional[float] = Field(1.5, description="行高")
+    binding_field: Optional[str] = Field(None, description="绑定字段")
+    # 图片属性
+    src: Optional[str] = Field("", description="图片地址")
+    border_radius: Optional[float] = Field(0, description="圆角")
     
     class Config:
         from_attributes = True
