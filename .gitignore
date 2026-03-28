@@ -65,5 +65,24 @@ vendor/
 # TypeScript
 *.tsbuildinfo
 
+# 项目记忆和日志
+MEMORY.md
+memory/
+
+# Real 项目配置
+.real/
+
+# 测试文件
+test_startup.py
+tests/
+
+# 非代码文档
+"活动提醒.md"
+"配置说明.md"
+*.md
+!README.md
+!backend/README.md
+!frontend/README.md
+
 # uv
 .venv/
