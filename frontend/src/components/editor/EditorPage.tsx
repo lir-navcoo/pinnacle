@@ -227,11 +227,11 @@ export function EditorPage({ template, onSave }: EditorPageProps) {
       {/* 顶部工具栏 */}
       <header className="h-14 border-b bg-white px-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
-          {/* 返回首页 */}
+          {/* 返回模板管理 */}
           <Link
-            href="/"
+            href="/templates"
             className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900"
-            title="返回首页"
+            title="返回模板管理"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">返回</span>
