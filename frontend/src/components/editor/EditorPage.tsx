@@ -55,6 +55,28 @@ export function EditorPage({ template, onSave }: EditorPageProps) {
 
   const canvasRef = useRef<CanvasEditorHandle>(null);
 
+  // 当 template prop 更新时，同步 elements state
+  useEffect(() => {
+    if (template?.elements) {
+      setElements(template.elements);
+    }
+    if (template?.id) {
+      setTemplateId(template.id);
+    }
+    if (template?.name) {
+      setName(template.name);
+    }
+    if (template?.width) {
+      setWidth(template.width);
+    }
+    if (template?.height) {
+      setHeight(template.height);
+    }
+    if (template?.background_image !== undefined) {
+      setBackground(template.background_image || "");
+    }
+  }, [template]);
+
   // 预设画布尺寸
   const canvasPresets = [
     { label: "手机竖屏", w: 750, h: 1334 },
