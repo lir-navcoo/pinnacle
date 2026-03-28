@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # 数据库（MySQL）
-    DATABASE_URL: str = "sqlite+aiosqlite:///pinnacle.db"
+    DATABASE_URL: str = "mysql+aiomysql://root:root123456@localhost:3306/pinnacle"
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"

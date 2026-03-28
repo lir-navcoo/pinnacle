@@ -23,7 +23,7 @@ Pinnacle（顶峰）是一个可视化模板编辑平台，支持：
 ### 后端
 
 - Python FastAPI
-- SQLAlchemy（异步）+ SQLite
+- SQLAlchemy（异步）+ MySQL
 - Pydantic（数据验证）
 - Uvicorn（ASGI 服务器）
 
@@ -178,9 +178,15 @@ Body:
 
 ### 数据库
 
-使用 SQLite 数据库，文件位于 `backend/pinnacle.db`。
+使用 MySQL 数据库，连接信息通过 `backend/.env` 配置：
 
-首次启动后端服务时，数据库会自动创建并初始化。
+```env
+DATABASE_URL=mysql+aiomysql://root:password@localhost:3306/pinnacle
+```
+
+首次启动后端服务前，请确保：
+1. MySQL 服务正在运行
+2. 已创建 `pinnacle` 数据库（支持 utf8mb4 字符集）
 
 ### 组件开发
 
